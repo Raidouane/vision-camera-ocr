@@ -13,12 +13,12 @@ public class QRCodeFrameProcessorPlugin: NSObject, FrameProcessorPluginBase {
               let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
               let uiImage = UIImage(ciImage: ciImage)
               let srcWidth = CGFloat(ciImage.extent.width)
-              if (srcWidth <= 720) {
+              if (srcWidth <= 480) {
                 return uiImage;
               }
 
               let srcHeight = CGFloat(ciImage.extent.height)
-              let dstWidth: CGFloat = 720
+              let dstWidth: CGFloat = 480
               let ratio = dstWidth / srcWidth
               let dstHeight: CGFloat = srcHeight * ratio
               let imageSize = CGSize(width: srcWidth * ratio, height: srcHeight * ratio)
@@ -32,7 +32,6 @@ public class QRCodeFrameProcessorPlugin: NSObject, FrameProcessorPluginBase {
           return nil
       }
 
-
   @objc
   public static func callback(_ frame: Frame!, withArgs _: [Any]!) -> Any! {
     let imageScaled = getImageFromSampleBuffer(buffer: frame.buffer)
@@ -44,7 +43,7 @@ public class QRCodeFrameProcessorPlugin: NSObject, FrameProcessorPluginBase {
     image.orientation = frame.orientation
     var recognizedText: String
     do {
-        recognizedText = try textRecognizer.results(in: image).text
+        recognizedText = try TextRecognizer.textRecognizer().results(in: image).text
         return recognizedText
        } catch let error {
         print("Failed to recognize text with error: ", error.localizedDescription)
